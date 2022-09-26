@@ -15,11 +15,22 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CModal,
+  CModalBody,
+  CModalHeader,
+  CModalTitle,
+  CModalFooter,
 } from '@coreui/react'
 
 const Products = () => {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
+  const [visible, setVisible] = useState(false)
+  const [product, setProduct] = useState(null)
+
+  useEffect(() => {
+    getProducts()
+  }, [])
 
   const getProducts = async () => {
     try {
@@ -30,17 +41,26 @@ const Products = () => {
     }
   }
 
+  const createProduct = () => {
+    navigate('/products/create')
+  }
+
   const editProduct = (id) => {
     navigate('/products/edit/' + id)
   }
 
-  const deleteProduct = (id) => {
-    console.log(id)
+  const deleteProduct = async () => {
+    const response = await Api.delete('/products/' + product)
+    if (response.status === 200) {
+      getProducts()
+    }
+    setVisible(false)
   }
 
-  useEffect(() => {
-    getProducts()
-  }, [])
+  const showModal = (id) => {
+    setProduct(id)
+    setVisible(!visible)
+  }
 
   return (
     <CRow>
@@ -50,6 +70,11 @@ const Products = () => {
             <strong>Products</strong>
           </CCardHeader>
           <CCardBody>
+            <CCard className="mb-4">
+              <CButton color="success" onClick={() => createProduct()}>
+                Create Product
+              </CButton>
+            </CCard>
             <CTable bordered>
               <CTableHead>
                 <CTableRow>
@@ -66,7 +91,7 @@ const Products = () => {
                 {products.map((value, index) => {
                   return (
                     <CTableRow key={index}>
-                      <CTableHeaderCell scope="row">{value.id}</CTableHeaderCell>
+                      <CTableHeaderCell scope="row">{++index}</CTableHeaderCell>
                       <CTableDataCell>{value.name}</CTableDataCell>
                       <CTableDataCell>{value.price}</CTableDataCell>
                       <CTableDataCell>{value.stock}</CTableDataCell>
@@ -76,7 +101,7 @@ const Products = () => {
                         </CButton>
                       </CTableDataCell>
                       <CTableDataCell>
-                        <CButton color="danger" onClick={() => deleteProduct(value.id)}>
+                        <CButton color="danger" onClick={() => showModal(value.id)}>
                           Delete
                         </CButton>
                       </CTableDataCell>
@@ -88,6 +113,20 @@ const Products = () => {
           </CCardBody>
         </CCard>
       </CCol>
+      <CModal visible={visible} onClose={() => setVisible(false)}>
+        <CModalHeader>
+          <CModalTitle>Delete</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Are you sure you want to delete the product?</CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setVisible(false)}>
+            Close
+          </CButton>
+          <CButton color="danger" onClick={() => deleteProduct()}>
+            Acept
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </CRow>
   )
 }

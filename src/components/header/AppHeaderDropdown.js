@@ -10,10 +10,18 @@ import {
 } from '@coreui/react'
 import { cilUser, cilAccountLogout } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import { removeToken } from 'src/services/Auth'
 
 import avatar9 from './../../assets/images/avatars/9.jpg'
+import { useNavigate } from 'react-router-dom'
 
 const AppHeaderDropdown = () => {
+  const navigate = useNavigate()
+  const signOut = () => {
+    removeToken()
+    navigate('/login')
+  }
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
@@ -26,7 +34,7 @@ const AppHeaderDropdown = () => {
           Profile
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
+        <CDropdownItem href="javascript:void(0)" onClick={() => signOut()}>
           <CIcon icon={cilAccountLogout} className="me-2" />
           Log Out
         </CDropdownItem>

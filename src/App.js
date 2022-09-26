@@ -1,5 +1,5 @@
 import React, { Component, Suspense, useState } from 'react'
-import { HashRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import SetupInterceptors from './services/SetupInterceptors'
 import './scss/style.scss'
 
@@ -32,7 +32,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 class App extends Component {
   render() {
     return (
-      <HashRouter>
+      <BrowserRouter>
         {<NavigateFunctionComponent />}
         <Suspense fallback={loading}>
           <Routes>
@@ -43,7 +43,7 @@ class App extends Component {
             <Route path="*" name="Home" element={<DefaultLayout />} />
           </Routes>
         </Suspense>
-      </HashRouter>
+      </BrowserRouter>
     )
   }
 }
