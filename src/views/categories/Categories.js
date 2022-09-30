@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   CCard,
@@ -27,18 +27,18 @@ const Categories = () => {
   const [visible, setVisible] = useState(false)
   const [category, setCategory] = useState(null)
 
-  useEffect(() => {
-    getCategories()
-  }, [])
-
-  const getCategories = async () => {
+  const getCategories = useCallback(async () => {
     try {
       const response = await Api.get('/categories')
       setCategories(response.data.data)
     } catch (error) {
       console.log(error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    getCategories()
+  }, [getCategories])
 
   const createCategory = () => {
     navigate('/categories/create')

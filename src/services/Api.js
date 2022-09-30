@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchToken } from './Auth'
+import { fetchAccessToken } from './Auth'
 import { Apiurl } from './Apiurl'
 
 export const Api = axios.create({
@@ -11,7 +11,7 @@ export const Api = axios.create({
 
 Api.interceptors.request.use(
   (config) => {
-    const accessToken = fetchToken()
+    const accessToken = fetchAccessToken()
 
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`

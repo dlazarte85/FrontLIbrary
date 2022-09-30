@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Api from './../../services/Api'
 import {
@@ -13,26 +13,25 @@ import {
   CFormLabel,
   CRow,
   CFormSelect,
+  CAlert,
 } from '@coreui/react'
 
 const EditProduct = () => {
   const navigate = useNavigate()
-  const [validated, setValidated] = useState(false)
-  const [categories, setCategories] = useState([])
   const [params, setParams] = useState({
     name: '',
     price: '',
     stock: '',
   })
-  let data = useParams()
-  let productId = data.id
+  const [categories, setCategories] = useState([])
+  const [validated, setValidated] = useState(false)
+  const [error, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState([])
 
-  useEffect(() => {
-    getProduct()
-    getCategory()
-  }, [])
+  const data = useParams()
+  const productId = data.id
 
-  const getProduct = async () => {
+  const getProduct = useCallback(async () => {
     try {
       const response = await Api.get('/products/' + productId)
       if (response.status === 200) {
@@ -41,7 +40,12 @@ const EditProduct = () => {
     } catch (error) {
       console.log(error)
     }
-  }
+  }, [productId])
+
+  useEffect(() => {
+    getProduct()
+    getCategory()
+  }, [getProduct])
 
   const getCategory = async () => {
     try {
@@ -66,7 +70,16 @@ const EditProduct = () => {
       await Api.put('/products/' + productId, params)
       navigate('/products')
     } catch (error) {
-      console.log(error)
+      setError(true)
+      if (error.response.status === 422) {
+        let errorMessage = []
+        errorMessage = error.response.data.error.map((value) => {
+          return value.loc[1] + ': ' + value.msg
+        })
+        setErrorMsg(errorMessage)
+      } else {
+        setErrorMsg((current) => [...current, error.response.data.error])
+      }
     }
   }
 
@@ -85,6 +98,15 @@ const EditProduct = () => {
             <strong>Edit Product</strong>
           </CCardHeader>
           <CCardBody>
+            {error === true ? (
+              <CAlert color="danger">
+                {errorMsg.map((value, index) => {
+                  return <p key={index}>{value}</p>
+                })}
+              </CAlert>
+            ) : (
+              ''
+            )}
             <CForm className="row g-3 needs-validation" noValidate validated={validated}>
               <CCol md={6}>
                 <CFormLabel htmlFor="validationCustomName">Name</CFormLabel>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Apiurl } from '../../../services/Apiurl'
-import { setToken } from '../../../services/Auth'
+import { setAccessToken, setRefreshToken } from '../../../services/Auth'
 import axios from 'axios'
 import {
   CAlert,
@@ -22,24 +22,24 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 
 const Login = () => {
   let navigate = useNavigate()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [params, setParams] = useState({
+    username: '',
+    password: '',
+  })
 
   const handleSubmit = () => {
-    if ((username === '') & (password === '')) {
+    if ((params.username === '') & (params.password === '')) {
       return
     } else {
       let url = Apiurl + '/login'
-      var bodyFormData = new FormData()
-      bodyFormData.append('username', username)
-      bodyFormData.append('password', password)
       axios
-        .post(url, bodyFormData)
+        .post(url, params)
         .then(function (response) {
           if (response.status === 200) {
-            setToken(response.data.access_token)
+            setAccessToken(response.data.data.access_token)
+            setRefreshToken(response.data.data.refresh_token)
             navigate('/dashboard')
           }
         })
@@ -48,6 +48,13 @@ const Login = () => {
           setErrorMsg(error.response.data.error)
         })
     }
+  }
+
+  const handleChange = (name, value) => {
+    setParams((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
   }
 
   return (
@@ -69,7 +76,7 @@ const Login = () => {
                         placeholder="Username"
                         name="username"
                         autoComplete="username"
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -81,7 +88,7 @@ const Login = () => {
                         name="password"
                         placeholder="Password"
                         autoComplete="current-password"
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
                       />
                     </CInputGroup>
                     <CRow>

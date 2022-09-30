@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Api from './../../services/Api'
 
@@ -28,18 +28,18 @@ const Products = () => {
   const [visible, setVisible] = useState(false)
   const [product, setProduct] = useState(null)
 
-  useEffect(() => {
-    getProducts()
-  }, [])
-
-  const getProducts = async () => {
+  const getProducts = useCallback(async () => {
     try {
       const response = await Api.get('/products')
       setProducts(response.data.data)
     } catch (error) {
       console.log(error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    getProducts()
+  }, [getProducts])
 
   const createProduct = () => {
     navigate('/products/create')

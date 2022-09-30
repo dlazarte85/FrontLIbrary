@@ -13,32 +13,45 @@ import {
   CFormLabel,
   CRow,
   CFormSelect,
+  CAlert,
 } from '@coreui/react'
 
 const CreateProduct = () => {
   const navigate = useNavigate()
-  const [categories, setCategories] = useState([])
   const [params, setParams] = useState({
     name: '',
     price: '',
     stock: '',
     category_id: '',
   })
+  const [categories, setCategories] = useState([])
   const [validated, setValidated] = useState(false)
+  const [error, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState([])
 
   const handleSubmit = async (event) => {
-    const form = event.currentTarget
+    const form = document.getElementById('create-form')
     if (form.checkValidity() === false) {
       event.preventDefault()
       event.stopPropagation()
+      setValidated(true)
+      return
     }
-    setValidated(true)
 
     try {
       await Api.post('/products', params)
       navigate('/products')
     } catch (error) {
-      console.log(error)
+      setError(true)
+      if (error.response.status === 422) {
+        let errorMessage = []
+        errorMessage = error.response.data.error.map((value) => {
+          return value.loc[1] + ': ' + value.msg
+        })
+        setErrorMsg(errorMessage)
+      } else {
+        setErrorMsg((current) => [...current, error.response.data.error])
+      }
     }
   }
 
@@ -72,11 +85,20 @@ const CreateProduct = () => {
             <strong>Create Product</strong>
           </CCardHeader>
           <CCardBody>
+            {error === true ? (
+              <CAlert color="danger">
+                {errorMsg.map((value, index) => {
+                  return <p key={index}>{value}</p>
+                })}
+              </CAlert>
+            ) : (
+              ''
+            )}
             <CForm
+              id="create-form"
               className="row g-3 needs-validation"
               noValidate
               validated={validated}
-              onSubmit={handleSubmit}
             >
               <CCol md={6}>
                 <CFormLabel htmlFor="validationCustomName">Name</CFormLabel>
