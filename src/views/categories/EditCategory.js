@@ -67,10 +67,10 @@ const EditCategory = () => {
     }
   }
 
-  const handleChange = (name, value) => {
+  const handleChange = (e) => {
     setParams((prevState) => ({
       ...prevState,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -100,7 +100,7 @@ const EditCategory = () => {
                   value={params.name}
                   id="validationCustomName"
                   aria-describedby="inputGroupPrepend"
-                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                  onChange={handleChange}
                   required
                 />
                 <CFormFeedback invalid>Please choose a name.</CFormFeedback>

@@ -83,10 +83,10 @@ const EditProduct = () => {
     }
   }
 
-  const handleChange = (name, value) => {
+  const handleChange = (e) => {
     setParams((prevState) => ({
       ...prevState,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -116,7 +116,7 @@ const EditProduct = () => {
                   value={params.name}
                   id="validationCustomName"
                   aria-describedby="inputGroupPrepend"
-                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                  onChange={handleChange}
                   required
                 />
                 <CFormFeedback invalid>Please choose a name.</CFormFeedback>
@@ -129,7 +129,7 @@ const EditProduct = () => {
                   value={params.price}
                   step="0.01"
                   id="validationCustomPrice"
-                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                  onChange={handleChange}
                   required
                 />
               </CCol>
@@ -140,7 +140,7 @@ const EditProduct = () => {
                   type="number"
                   value={params.stock}
                   id="validationCustomStock"
-                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                  onChange={handleChange}
                   required
                 />
               </CCol>
@@ -149,7 +149,7 @@ const EditProduct = () => {
                 <CFormSelect
                   id="validationCustomCategory"
                   name="category_id"
-                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                  onChange={handleChange}
                   required
                 >
                   <option>Select category</option>

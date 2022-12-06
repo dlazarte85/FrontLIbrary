@@ -50,12 +50,14 @@ const Login = () => {
     }
   }
 
-  const handleChange = (name, value) => {
+  const handleChange = (e) => {
     setParams((prevState) => ({
       ...prevState,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }))
   }
+
+  console.log('rendered')
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -76,7 +78,7 @@ const Login = () => {
                         placeholder="Username"
                         name="username"
                         autoComplete="username"
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        onChange={handleChange}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -88,7 +90,7 @@ const Login = () => {
                         name="password"
                         placeholder="Password"
                         autoComplete="current-password"
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        onChange={handleChange}
                       />
                     </CInputGroup>
                     <CRow>

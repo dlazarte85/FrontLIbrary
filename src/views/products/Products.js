@@ -20,6 +20,8 @@ import {
   CModalHeader,
   CModalTitle,
   CModalFooter,
+  CPagination,
+  CPaginationItem,
 } from '@coreui/react'
 
 const Products = () => {
@@ -110,6 +112,13 @@ const Products = () => {
                 })}
               </CTableBody>
             </CTable>
+            <CPagination className="justify-content-end" aria-label="Page navigation example">
+              <CPaginationItem disabled>Previous</CPaginationItem>
+              <CPaginationItem>1</CPaginationItem>
+              <CPaginationItem>2</CPaginationItem>
+              <CPaginationItem>3</CPaginationItem>
+              <CPaginationItem>Next</CPaginationItem>
+            </CPagination>
           </CCardBody>
         </CCard>
       </CCol>
